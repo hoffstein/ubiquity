@@ -1,0 +1,26 @@
+a:link {
+    text-decoration: none;
+    color: blue;
+}
+a:visited {
+    text-decoration: none;
+    color: blue;
+}
+a:active {
+    text-decoration: none;
+    color: blue;
+}
+a:hover {
+    text-decoration: none;
+    color: blue;
+}
+
+#list2 {
+	font: italic 1em Georgia, Times, serif;
+	color: #999;
+}
+#list2 p {
+	font: normal .85em Georgia, Times, serif;
+	color: #000;
+}
+
