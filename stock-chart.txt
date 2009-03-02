@@ -1,0 +1,32 @@
+CmdUtils.CreateCommand({
+    name: "stock-chart",
+    homepage: "http://hoffstein.net/ubiquity/stock-chart.html",
+    author: { name: "Ben Hoffstein", email: "ben@hoffstein.net" },
+    license: "MPL",
+    description: "Displays a stock chart for the given ticker.",
+
+    takes: { ticker: noun_arb_text },
+
+    _getChartUrl: function(searchText) {
+        var template = '<script src="http://charts.wikinvest.com/wikinvest/wikichart/javascript/scripts.php" type="text/javascript"></script><div id="wikichartContainer_78E196FD-0884-36E9-10B5-C41D8372CF93"><div style="width: 300px; text-align: center; vertical-align: center; margin-top: 22px;"><a href="http://get.adobe.com/flashplayer/"><img src="http://cdn.wikinvest.com/wikinvest/images/adobe_flash_logo.gif" alt="Flash" style="border-width: 0px;"/><br/>Flash Player 9 or higher is required to view the chart<br/><strong>Click here to download Flash Player now</strong></a></div></div><script type="text/javascript">if (typeof(embedWikichart) != "undefined") {embedWikichart("http://charts.wikinvest.com/WikiChartMini.swf","wikichartContainer_78E196FD-0884-36E9-10B5-C41D8372CF93","300","245",{"liveQuote":"true","ticker":{ticker},"showAnnotations":"false","rollingDate":"1 year"});}</script>';
+        var data = { ticker: searchText };
+        return CmdUtils.renderTemplate(template, data);
+    },
+
+    preview: function(pblock, ticker) {
+        var searchText = jQuery.trim(ticker.text);
+        if (searchText.length < 1) {
+            pblock.innerHTML = "Retrieves stock chart for ticker";
+            return;
+        }
+        var previewData = "Stock chart for <b>" + searchText + "</b><br><br>" + this._getChartUrl(searchText);
+        pblock.innerHTML = previewData;
+    },
+
+    execute: function(ticker) {
+        var url = "http://www.wikinvest.com/stock/{TICKER}";
+        var query = jQuery.trim(ticker.text);
+        var urlString = url.replace("{TICKER}", query);
+        Utils.openUrlInBrowser(urlString);
+    }
+});
