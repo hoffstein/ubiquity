@@ -1,11 +1,18 @@
 CmdUtils.CreateCommand({
-  name: "stock-quote",
-  homepage: "http://hoffstein.net/ubiquity/stock-quote.html",
-  author: { name: "Ben Hoffstein", email: "ben@hoffstein.net"},
-  license: "MPL",
-  description: "Launches the Google Finance page for a given ticker.",
+    name: "stock-quote",
+    homepage: "http://hoffstein.net/ubiquity/stock-quote.html",
+    author: { name: "Ben Hoffstein", email: "ben@hoffstein.net"},
+    license: "MPL",
+    description: "Displays a stock quote for the given ticker.",
 
-  takes: { ticker: noun_arb_text },
+    takes: { ticker: noun_arb_text },
+
+    _getQuoteUrl: function(searchText) {
+        var url = '<iframe allowtransparency="true" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" src="http://api.finance.yahoo.com/instrument/1.0/{ticker}/badge;quote/HTML/f.white?AppID=Ol01LBYr4Q9p6J84DAy4M08BzZ6iIss2jGht&sig=Rn0je4jD5VUeSOxO1K8D826NCNE-&t=1153144651468" width="300px" height="452px"></iframe>';
+        var template = url.replace("{ticker}", searchText);
+        var data = { ticker: searchText };
+        return CmdUtils.renderTemplate(template, data);
+    },
 
   preview: function(pblock, ticker) {
     var searchText = jQuery.trim(ticker.text);
@@ -15,12 +22,12 @@ CmdUtils.CreateCommand({
     }
 
     var previewTemplate = "Retrieves stock quote for <b>${query}</b>";
-    var previewData = { query: searchText };
-    pblock.innerHTML = CmdUtils.renderTemplate(previewTemplate, previewData);
-
+    var previewData = "Stock quote for <b>" + searchText + "</b><br><br>" + this._getQuoteUrl(searchText);
+    pblock.innerHTML = previewData;
   },
+
   execute: function(ticker) {
-    var url = "http://finance.google.com/finance?q={QUERY}";
+    var url = "http://finance.yahoo.com/q?s={QUERY}";
     var query = ticker.text;
     var urlString = url.replace("{QUERY}", query);
     Utils.openUrlInBrowser(urlString);
